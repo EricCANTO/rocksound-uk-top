@@ -1,19 +1,12 @@
 
-// scrape-top-uk.js
+// scrape-snep-rock.js
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/';
+const URL = 'https://snepmusique.com/les-tops/le-top-de-la-semaine/top-albums/?categorie=Top%20Rock%20%26%20Metal';
 
-(async () => {
-  const { data } = await axios.get(URL);
-  const $ = cheerio.load(data);
-
-  const topAlbums = [];
-
-// Fonction pour échapper les caractères XML problématiques
 function escapeXML(str) {
   return str
     .replace(/&/g, '&amp;')
@@ -22,35 +15,43 @@ function escapeXML(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
 }
-  $('.chart-positions .chart-positions__list li').slice(0, 10).each((i, el) => {
-    const position = $(el).find('.position').text().trim();
+
+(async () => {
+  const { data } = await axios.get(URL);
+  const $ = cheerio.load(data);
+
+  const topAlbums = [];
+
+  $('.top-row').each((i, el) => {
+    const position = $(el).find('.position').text().trim() || (i + 1).toString();
     const title = $(el).find('.title').text().trim();
     const artist = $(el).find('.artist').text().trim();
-    const weeks = $(el).find('.weeks').text().trim();
-
-    topAlbums.push({ position, title, artist, weeks });
+    const label = $(el).find('.label').text().trim();
+    if (title && artist) {
+      topAlbums.push({ position, title, artist, label });
+    }
   });
 
   const html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Top Rock & Metal UK</title>
+  <title>Top Rock & Metal France – SNEP</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 40px; }
-    h1 { color: #1db954; }
+    h1 { color: #f39c12; }
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 10px; border: 1px solid #333; }
-    th { background: #222; color: #1db954; }
+    th { background: #222; color: #f39c12; }
     tr:nth-child(even) { background: #181818; }
   </style>
 </head>
 <body>
-  <h1>Top Rock & Metal UK</h1>
+  <h1>Top 10 Rock & Metal – France (source : SNEP)</h1>
   <table>
-    <thead><tr><th>#</th><th>Album</th><th>Artiste</th><th>Semaines</th></tr></thead>
+    <thead><tr><th>#</th><th>Album</th><th>Artiste</th><th>Label</th></tr></thead>
     <tbody>
-      ${topAlbums.map(a => `<tr><td>${a.position}</td><td>${a.title}</td><td>${a.artist}</td><td>${a.weeks}</td></tr>`).join("\\n")}
+      ${topAlbums.map(a => `<tr><td>${a.position}</td><td>${a.title}</td><td>${a.artist}</td><td>${a.label}</td></tr>`).join("\n")}
     </tbody>
   </table>
 </body>
@@ -59,15 +60,15 @@ function escapeXML(str) {
   const rss = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
-  <title>Top Rock & Metal UK</title>
+  <title>Top Rock & Metal – SNEP</title>
   <link>${URL}</link>
-  <description>Classement officiel UK des albums Rock & Metal</description>
+  <description>Classement officiel Rock & Metal France (source : SNEP)</description>
   ${topAlbums.map(a => `
   <item>
     <title>${escapeXML(a.position + '. ' + a.artist + ' – ' + a.title)}</title>
     <link>${URL}</link>
-    <description>${escapeXML(a.weeks + ' semaines dans le classement')}</description>
-  </item>`).join("\\n")}
+    <description>${escapeXML('Label : ' + a.label)}</description>
+  </item>`).join("\n")}
 </channel>
 </rss>`;
 
