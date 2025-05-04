@@ -1,3 +1,4 @@
+
 [build]
 publish = "dist"
-command = "node scrape-top-uk.js"
+command = "node scrape-snep-rock.js"
