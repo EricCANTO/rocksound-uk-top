@@ -54,9 +54,9 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
   <description>Classement officiel UK des albums Rock & Metal</description>
   ${topAlbums.map(a => `
   <item>
-    <title>${a.position}. ${a.artist} – ${a.title}</title>
+    <title>${a.position}. ${a.artist.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')} – ${a.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}</title>
     <link>${URL}</link>
-    <description>${a.weeks} semaines dans le classement</description>
+    <description>${a.weeks.replace(/&/g,'&amp;')} semaines dans le classement</description>
   </item>`).join("\\n")}
 </channel>
 </rss>`;
