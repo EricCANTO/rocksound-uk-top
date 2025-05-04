@@ -1,4 +1,13 @@
-
 [build]
 command = "node scrape-snep-puppeteer.js"
 publish = "dist"
+
+[functions]
+node_bundler = "esbuild"
+
+[[plugins]]
+package = "@netlify/plugin-functions-install-core"
+
+[build.environment]
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "true"
+PUPPETEER_EXECUTABLE_PATH = "/usr/bin/chromium-browser"
