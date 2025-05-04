@@ -12,6 +12,16 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
   const $ = cheerio.load(data);
 
   const topAlbums = [];
+
+// Fonction pour échapper les caractères XML problématiques
+function escapeXML(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
   $('.chart-positions .chart-positions__list li').slice(0, 10).each((i, el) => {
     const position = $(el).find('.position').text().trim();
     const title = $(el).find('.title').text().trim();
@@ -54,9 +64,9 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
   <description>Classement officiel UK des albums Rock & Metal</description>
   ${topAlbums.map(a => `
   <item>
-    <title>${a.position}. ${a.artist.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')} – ${a.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}</title>
+    <title>${escapeXML(a.position + '. ' + a.artist + ' – ' + a.title)}</title>
     <link>${URL}</link>
-    <description>${a.weeks.replace(/&/g,'&amp;')} semaines dans le classement</description>
+    <description>${escapeXML(a.weeks + ' semaines dans le classement')}</description>
   </item>`).join("\\n")}
 </channel>
 </rss>`;
