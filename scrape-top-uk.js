@@ -1,7 +1,5 @@
 
 // scrape-top-uk.js
-// 📦 Script Node.js pour scraper le top Rock & Metal UK et générer un index.html + rss.xml
-
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
@@ -23,7 +21,6 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
     topAlbums.push({ position, title, artist, weeks });
   });
 
-  // HTML
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,14 +40,12 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
   <table>
     <thead><tr><th>#</th><th>Album</th><th>Artiste</th><th>Semaines</th></tr></thead>
     <tbody>
-      ${topAlbums.map(a => `<tr><td>${a.position}</td><td>${a.title}</td><td>${a.artist}</td><td>${a.weeks}</td></tr>`).join('
-')}
+      ${topAlbums.map(a => `<tr><td>${a.position}</td><td>${a.title}</td><td>${a.artist}</td><td>${a.weeks}</td></tr>`).join('\n')}
     </tbody>
   </table>
 </body>
 </html>`;
 
-  // RSS
   const rss = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
@@ -62,8 +57,7 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
     <title>${a.position}. ${a.artist} – ${a.title}</title>
     <link>${URL}</link>
     <description>${a.weeks} semaines dans le classement</description>
-  </item>`).join('
-')}
+  </item>`).join('\n')}
 </channel>
 </rss>`;
 
