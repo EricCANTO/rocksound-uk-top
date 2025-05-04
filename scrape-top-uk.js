@@ -40,8 +40,8 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
   <table>
     <thead><tr><th>#</th><th>Album</th><th>Artiste</th><th>Semaines</th></tr></thead>
     <tbody>
-      ${topAlbums.map(a => `<tr><td>${a.position}</td><td>${a.title}</td><td>${a.artist}</td><td>${a.weeks}</td></tr>`).join('\n')}
-    <tr><td colspan='4' style='text-align:center;'>No data found</td></tr></tbody>
+      ${topAlbums.map(a => `<tr><td>${a.position}</td><td>${a.title}</td><td>${a.artist}</td><td>${a.weeks}</td></tr>`).join("\\n")}
+    </tbody>
   </table>
 </body>
 </html>`;
@@ -57,7 +57,7 @@ const URL = 'https://www.officialcharts.com/charts/rock-and-metal-albums-chart/'
     <title>${a.position}. ${a.artist} – ${a.title}</title>
     <link>${URL}</link>
     <description>${a.weeks} semaines dans le classement</description>
-  </item>`).join('\n')}
+  </item>`).join("\\n")}
 </channel>
 </rss>`;
 
